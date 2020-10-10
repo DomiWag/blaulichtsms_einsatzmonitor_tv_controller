@@ -1,6 +1,7 @@
 import logging
 import re
 import subprocess
+import os
 from abc import ABC, abstractmethod
 from enum import IntEnum
 from queue import Empty, Queue
@@ -12,6 +13,7 @@ import cec
 class CecMode(IntEnum):
     LIB_CEC = 1
     PYTHON_CEC = 2
+    SCREENSAVER = 3
 
 
 class CecLogging(IntEnum):
@@ -32,6 +34,8 @@ class AbstractCecController(ABC):
 
         self._send_errors = send_errors
         self._is_hdmi_error = False
+
+        self._display_is_on = True
 
         self._init_cec_connection()
 
@@ -243,3 +247,36 @@ class LibCecController(AbstractCecController):
         if self.cecclient:
             self.cecclient.kill()
             self.cecclient.wait(10)
+
+
+class ScreensaverController(AbstractCecController):
+    """Controls a screensaver
+    """
+
+    def _init_cec_connection(self):
+        os.environ['DISPLAY'] = ":0"
+        pass
+
+    def power_on(self, device_id="0"):
+        if not self.is_on():
+            self.logger.info("Power on Screen")
+        self._execute_xset_command("on")
+        self._display_is_on = True
+
+    def standby(self, device_id="0"):
+        if self.is_on():
+            self.logger.info("Standby Screen")
+        self._execute_xset_command("off")
+        self._display_is_on = False
+
+    def activate_source(self):
+        pass
+
+    def is_on(self):
+        return self._display_is_on
+
+    @staticmethod
+    def _execute_xset_command(command):
+        xset_command = "DISPLAY=:0 xset dpms force " + command + " "
+        subprocess.call(xset_command, shell=True)
+        return command == "on"
