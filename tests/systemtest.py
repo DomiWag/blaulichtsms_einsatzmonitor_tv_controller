@@ -3,6 +3,7 @@ from multiprocessing import Process
 
 from blaulichtsmscontroller import BlaulichtSmsController
 from chromiumbrowsercontroller import ChromiumBrowserController
+from lightcontrol import AlarmLightController
 from main import get_logging_config, set_up_logging, get_cec_controller
 from tests import dashboardapimock
 from tests.alarmmonitortest import AlarmMonitorTest
@@ -31,7 +32,7 @@ def _print_test_summary(error_count, warning_count, logging_output_file):
     print("")
     print("  * Starts a Chromium browser instance which is displaying the blaulichtSMS Einsatzmonitor.")
     print("  * Requests three times alarms from the blaulichtSMS mock API, with no active alarms.")
-    print("  * Receives an active alarm at the fourth API request and powers the HDMI device on.")
+    print("  * Receives an active alarm at the fourth API request and powers the HDMI device and all alarm lights on.")
     print("  * After 30 seconds the alarm is no longer active and the HDMI device switches to standby.")
     print("  * Requests some more alarms without any active alarms.")
     print("  * Shuts down the alarm monitor and prints this summary containing the number of errors and warnings")
@@ -51,7 +52,7 @@ def main():
 
     * Starts a Chromium browser instance which is displaying the blaulichtSMS Einsatzmonitor.
     * Requests :api_update_count: times alarms from the blaulichtSMS mock API, with no active alarms.
-    * Receives an active alarm at the :api_request_count: + 1 API request and powers the HDMI device on.
+    * Receives an active alarm at the :api_request_count: + 1 API request and powers the HDMI device and all alarm lights on.
     * After :alarm_duration: seconds the alarm is no longer active and the HDMI device switches to standby.
     * Requests some more alarms without any active alarms.
     * Shuts down the alarm monitor and prints a summary containing the number of errors and warnings
@@ -81,9 +82,10 @@ def main():
     )
     hdmi_cec_controller = get_cec_controller(config, False, None)
     browser_controller = ChromiumBrowserController(mock_blaulichtsms_controller.get_session())
+    alarm_light_controller = AlarmLightController()
 
     alarm_monitor_test = AlarmMonitorTest(polling_interval, mock_blaulichtsms_controller, hdmi_cec_controller,
-                                          browser_controller, api_requests_count)
+                                          browser_controller, [alarm_light_controller], api_requests_count)
     alarm_monitor_test.run()
 
     server_mock.terminate()

@@ -2,10 +2,10 @@ from alarmmonitor import AlarmMonitor
 
 
 class AlarmMonitorTest(AlarmMonitor):
-    def __init__(self, polling_interval, blaulichtsms_controller, hdmi_cec_controller, browser_controller,
+    def __init__(self, polling_interval, blaulichtsms_controller, hdmi_cec_controller, browser_controller, alarm_listeners,
                  alarm_requests_count):
         super().__init__(polling_interval, False, False,
-                         blaulichtsms_controller, hdmi_cec_controller, browser_controller, None)
+                         blaulichtsms_controller, hdmi_cec_controller, browser_controller, None, alarm_listeners)
         self._run_count = 0
         self._alarm_requests_count = alarm_requests_count
 
@@ -24,5 +24,6 @@ class AlarmMonitorTest(AlarmMonitor):
 
         if self.blaulichtsms_controller.is_alarm():
             self.hdmi_cec_controller.power_on()
+            self.notify_alarm_listeners()
         else:
             self.hdmi_cec_controller.standby()
