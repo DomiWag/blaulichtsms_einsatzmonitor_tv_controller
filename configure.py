@@ -277,7 +277,7 @@ class AlarmMonitorConfigurator:
 
     @staticmethod
     def _is_valid_host(host):
-        return re.match(r"(^[a-zA-Z0-9_.+-]+$)", host) is not None
+        return re.match(r"^(?=.{1,253}$)(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63}(?<!-))*$", host) is not None
 
     @staticmethod
     def _is_valid_ip(ip):
