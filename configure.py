@@ -205,8 +205,8 @@ class AlarmMonitorConfigurator:
             self._is_valid_host_or_ip)
         self.lights += [{
             "address": address,
-            "username": None,
-            "password": None,
+            "username": "",
+            "password": "",
             "on_time": 60
             }]
 
@@ -323,7 +323,7 @@ class AlarmMonitorConfigurator:
         config["Email"] = {}
         config["blaulichtSMS Einsatzmonitor"] = {}
         config["Alarmmonitor"] = {}
-        config["lights"] = {}
+        config["alarm_lights"] = {}
         return config
 
     def _write_blaulichtsms_section(self, config):
@@ -352,9 +352,14 @@ class AlarmMonitorConfigurator:
         config["Email"]["subject"] = self.subject
 
     def _write_lights_section(self, config):
-        config["lights"]["count"] = str(len(self.lights))
+        config["alarm_lights"]["count"] = str(len(self.lights))
         for i in range(len(self.lights)):
-            config["lights"]["light" + str(i)] = json.dumps(self.lights[i])
+            light_section = "alarm_light_" + str(i)
+            config[light_section] = {}
+            config[light_section]["address"] = self.lights[i]["address"]
+            config[light_section]["username"] = self.lights[i]["username"]
+            config[light_section]["password"] = self.lights[i]["password"]
+            config[light_section]["on_time"] = str(self.lights[i]["on_time"])
 
     def _write_send_log(self):
         with open("logging_config.yaml", "r") as logging_config:
