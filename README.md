@@ -70,6 +70,10 @@ die Anwendung konfiguriert werden. Bei der Konfiguration werden folgende Informa
 - Ob das Versenden von Mail Benachrichtigungen (Log des Tages um Mitternacht, Auftritt eines Fehlers und deren Behebung, Start der Applikation) erwünscht ist und falls ja
   - Die Gmail Login Daten
   - Die Empfänger des Logs
+- Optionale Alarmlichter. Aktuelle Funktionen:
+  - Es werden nur Lichter auf Basis von Tasmota unterstützt
+  - Authentifizierung ist nicht implmentiert
+  - Für jedes Licht kann eine eigene Einschaltzeit in Sekunden vorgegeben werden. Intern wird der TimedPower Befehl von Tasmota genutzt.
 
 Nachdem die Konfiguration abgeschlossen ist können im File `config.ini` fortgeschrittenere Einstellungen vorgenommen werden. Das Versenden des Logs kann mit dem Attribut `send_log` im File `logging_config.yaml` eingestellt werden.
 
@@ -137,7 +141,7 @@ Konkret sollte sich der Test folgendermaßen verhalten:
 - Starten des _alarmmonitor_ Services. Während des Starts wird das HDMI Gerät ausgeschaltet.
 - 6 Abfragen der Mock API alle 10 Sekunden, die in keinen aktiven Alarmen resultieren.
 - Nach der 6. Abfrage liefert die Mock API einen aktiven Alarm.
-  Das HDMI Gerät wird eingeschaltet und der Einsatzmonitor eingezeigt.
+  Das HDMI Gerät wird eingeschaltet und der Einsatzmonitor eingezeigt. Außerdem werden alle Alarmlichter aktiviert.
 - Nach einer Minute sind keine Alarme aktiv und das HDMI Gerät wird ausgeschaltet.
 - Weitere Abfragen die keine aktiven Alarme zurückgeben.
 - Anzeigen einer Zusammenfassung des Tests mit der Anzahl der Fehler und Warnungen und dem Pfad des abgespeicherten Logs.
@@ -152,6 +156,8 @@ python3 tests/systemtest.py
 ```
 
 der Systemtest gestartet werden. Die Ausführung des Tests kann nur vom Root Verzeichnis der Applikation gestartet werden.
+
+Alternativ kann direkt `run_tests.sh` genutzt werden.
 
 ## HDMI Geräte Steuerung
 
