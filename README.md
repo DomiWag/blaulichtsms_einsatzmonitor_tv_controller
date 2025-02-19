@@ -6,6 +6,7 @@ Das Projekt ist eine Python 3 Anwendung des [blaulichtSMS Einsatzmonitor](https:
 
 - Anzeigen des blaulichtSMS Einsatzmonitor Dashboards auf einem HDMI CEC fähigen Gerät
 - Einschalten des HDMI CEC Gerätes beim Eintreffen eines neuen Alarms oder wahlweise auch bei neuen Informationen und Ausschalten des Gerätes nach einer vorgegebenen Zeit
+- Steuerung von Tasmota-basierten Alarmlichtern beim Eintreffen eines Alarms
 - Senden des Logs eines Tages per Mail
 - Senden einer Mail beim Auftreten eines Fehlers bzw. bei dessen Behebung
 
