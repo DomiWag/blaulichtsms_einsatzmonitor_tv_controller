@@ -281,7 +281,10 @@ class AlarmMonitorConfigurator:
 
     @staticmethod
     def _is_valid_ip(ip):
-        return re.match(r"(^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$)", ip) is not None
+        return re.match(r"^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\."
+                        r"(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\."
+                        r"(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\."
+                        r"(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$", ip) is not None
 
     #@staticmethod
     #def _is_valid_username(username):
