@@ -39,7 +39,7 @@ class AlarmMonitorConfigurator:
         self.smtp_port = "465"
         self.subject = "Einsatzmonitor"
 
-        self.lights = []
+        self.alarm_lights = []
 
         self.polling_interval = "30"
 
@@ -183,27 +183,27 @@ class AlarmMonitorConfigurator:
                     finished = False
         self.recipients = recipients
 
-    def _configure_lights(self):
-        configure_lights = self._is_yes_input("Do you want to setup alarm lights?")
-        while configure_lights:
+    def _configure_alarm_lights(self):
+        configure_alarm_lights = self._is_yes_input("Do you want to setup alarm lights?")
+        while configure_alarm_lights:
             print("")
-            self._configure_light_address()
+            self._configure_alarm_light_address()
             #print("")
             #self._configure_light_credentials()
             #if self._are_valid_light_credentials():
             #    break
             #else:
             #    print("")
-            #    self._print_warning(f"Unable to connect to light at {self.lights[:1]} with these credentials")
+            #    self._print_warning(f"Unable to connect to light at {self.alarm_lights[:1]} with these credentials")
             print("")
-            self._configure_light_settings()
-            configure_lights = self._is_yes_input("Do you want to setup another alarm light?")
+            self._configure_alarm_light_settings()
+            configure_alarm_lights = self._is_yes_input("Do you want to setup another alarm light?")
 
-    def _configure_light_address(self):
+    def _configure_alarm_light_address(self):
         address = self._get_input_with_validation(
             "Please enter the hostname or ip address of your light:", "Please enter a valid hostname or ip address:",
             self._is_valid_host_or_ip)
-        self.lights += [{
+        self.alarm_lights += [{
             "address": address,
             "username": "",
             "password": "",
@@ -217,11 +217,11 @@ class AlarmMonitorConfigurator:
     #            "Please enter the light's username:", "Please type a valid user name:",
     #            self._is_valid_username)
 
-    def _configure_light_settings(self):
+    def _configure_alarm_light_settings(self):
         prompt = "Please enter the seconds the alarm light" + \
             " should be on after receiving an alarm:"
 
-        self.lights[-1]['on_time'] = self._get_input_with_validation(
+        self.alarm_lights[-1]['on_time'] = self._get_input_with_validation(
             prompt, "Please enter a positive integer value:", self._is_positive_int)
 
     @staticmethod
@@ -305,7 +305,7 @@ class AlarmMonitorConfigurator:
         self._write_blaulichtsms_section(config)
         self._write_alarmmonitor_section(config)
         self._write_email_section(config)
-        self._write_lights_section(config)
+        self._write_alarm_lights_section(config)
 
         config_file_name = "config.ini"
         with open(config_file_name, "w") as config_file:
@@ -351,15 +351,16 @@ class AlarmMonitorConfigurator:
         config["Email"]["to_addrs"] = json.dumps(self.recipients)
         config["Email"]["subject"] = self.subject
 
-    def _write_lights_section(self, config):
-        config["alarm_lights"]["count"] = str(len(self.lights))
-        for i in range(len(self.lights)):
+    def _write_alarm_lights_section(self, config):
+        config["alarm_lights"]["count"] = str(len(self.alarm_lights))
+        for i in range(len(self.alarm_lights)):
             light_section = "alarm_light_" + str(i)
+            light_config = self.alarm_lights[i]
             config[light_section] = {}
-            config[light_section]["address"] = self.lights[i]["address"]
-            config[light_section]["username"] = self.lights[i]["username"]
-            config[light_section]["password"] = self.lights[i]["password"]
-            config[light_section]["on_time"] = str(self.lights[i]["on_time"])
+            config[light_section]["address"] = light_config["address"]
+            config[light_section]["username"] = light_config["username"]
+            config[light_section]["password"] = light_config["password"]
+            config[light_section]["on_time"] = str(light_config["on_time"])
 
     def _write_send_log(self):
         with open("logging_config.yaml", "r") as logging_config:
@@ -398,7 +399,7 @@ class AlarmMonitorConfigurator:
             self._configure_blaulichtsms_account()
             self._configure_alarmmonitor()
             self._configure_gmail()
-            self._configure_lights()
+            self._configure_alarm_lights()
             self._write()
 
             print("")
