@@ -39,6 +39,8 @@ class AlarmMonitorConfigurator:
         self.smtp_port = "465"
         self.subject = "Einsatzmonitor"
 
+        self.lights = []
+
         self.polling_interval = "30"
 
     def _get_input_with_validation(self, prompt, invalid_prompt, validation_func):
@@ -181,6 +183,40 @@ class AlarmMonitorConfigurator:
                     finished = False
         self.recipients = recipients
 
+    def _configure_lights(self):
+        configure_lights = self._is_yes_input("Do you want to setup alarm lights?")
+        while configure_lights:
+            print("")
+            self._configure_light_address()
+            #print("")
+            #self._configure_light_credentials()
+            #if self._are_valid_light_credentials():
+            #    break
+            #else:
+            #    print("")
+            #    self._print_warning(f"Unable to connect to light at {self.lights[:1]} with these credentials")
+            print("")
+            self._configure_light_settings()
+            configure_lights = self._is_yes_input("Do you want to setup another alarm light?")
+
+    def _configure_light_address(self):
+        address = self._get_input_with_validation(
+            "Please enter the hostname or ip address of your light:", "Please enter a valid hostname or ip address:",
+            self._is_valid_host_or_ip)
+        self.lights += [{
+            "address": address,
+            "username": None,
+            "password": None,
+            "on_time": 60
+            }]
+
+    def _configure_light_settings(self):
+        prompt = "Please enter the seconds the alarm light" + \
+            " should be on after receiving an alarm:"
+
+        self.lights[-1]['on_time'] = self._get_input_with_validation(
+            prompt, "Please enter a positive integer value:", self._is_positive_int)
+
     @staticmethod
     def _is_valid_blaulichtsms_customer_id(customer_id):
         return re.match("^[0-9]{6}$", customer_id)
@@ -228,6 +264,19 @@ class AlarmMonitorConfigurator:
     def _is_valid_email(email):
         return re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) is not None
 
+    @staticmethod
+    def _is_valid_host_or_ip(host_or_ip):
+        return AlarmMonitorConfigurator._is_valid_host(host_or_ip) or AlarmMonitorConfigurator._is_valid_ip(host_or_ip)
+
+    @staticmethod
+    def _is_valid_host(host):
+        return re.match(r"(^[a-zA-Z0-9_.+-]+$)", host) is not None
+
+    @staticmethod
+    def _is_valid_ip(ip):
+        return re.match(r"(^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$)", ip) is not None
+
+
     def _write(self):
         self._write_config_ini()
         self._write_send_log()
@@ -242,6 +291,7 @@ class AlarmMonitorConfigurator:
         self._write_blaulichtsms_section(config)
         self._write_alarmmonitor_section(config)
         self._write_email_section(config)
+        self._write_lights_section(config)
 
         config_file_name = "config.ini"
         with open(config_file_name, "w") as config_file:
@@ -259,6 +309,7 @@ class AlarmMonitorConfigurator:
         config["Email"] = {}
         config["blaulichtSMS Einsatzmonitor"] = {}
         config["Alarmmonitor"] = {}
+        config["lights"] = {}
         return config
 
     def _write_blaulichtsms_section(self, config):
@@ -285,6 +336,11 @@ class AlarmMonitorConfigurator:
         config["Email"]["from_addr"] = self.gmail_username
         config["Email"]["to_addrs"] = json.dumps(self.recipients)
         config["Email"]["subject"] = self.subject
+
+    def _write_lights_section(self, config):
+        config["lights"]["count"] = str(len(self.lights))
+        for i in range(len(self.lights)):
+            config["lights"]["light" + str(i)] = json.dumps(self.lights[i])
 
     def _write_send_log(self):
         with open("logging_config.yaml", "r") as logging_config:
@@ -323,6 +379,7 @@ class AlarmMonitorConfigurator:
             self._configure_blaulichtsms_account()
             self._configure_alarmmonitor()
             self._configure_gmail()
+            self._configure_lights()
             self._write()
 
             print("")
