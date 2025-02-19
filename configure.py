@@ -210,6 +210,13 @@ class AlarmMonitorConfigurator:
             "on_time": 60
             }]
 
+    #def _configure_light_credentials(self):
+    #    need_credential = self._is_yes_input("Does your light require login credentials?")
+    #    if need_credential:
+    #        self.ligts[:1]['username'] = self._get_input_with_validation(
+    #            "Please enter the light's username:", "Please type a valid user name:",
+    #            self._is_valid_username)
+
     def _configure_light_settings(self):
         prompt = "Please enter the seconds the alarm light" + \
             " should be on after receiving an alarm:"
@@ -275,6 +282,13 @@ class AlarmMonitorConfigurator:
     @staticmethod
     def _is_valid_ip(ip):
         return re.match(r"(^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$)", ip) is not None
+
+    #@staticmethod
+    #def _is_valid_username(username):
+    #    return re.match(r"(^[a-zA-Z0-9_.+-]+$)", username) is not None
+
+    #def _is_valid_light_password(password):
+    #    light = TasmotaLightController()
 
 
     def _write(self):
