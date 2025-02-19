@@ -17,9 +17,9 @@ class BaseAlarmLight(abc.ABC):
         pass
 
 class TasmotaAlarmLight(BaseAlarmLight):
-    def __init__(self, ip: str, alarm_duration: int):
+    def __init__(self, ip: str, alarm_duration_seconds: int):
         self.ip = ip
-        self.alarm_duration = alarm_duration
+        self.alarm_duration = alarm_duration_seconds * 1000 # Convert to milliseconds
 
     def turn_on(self):
         requests.get(f"http://{self.ip}/cm?cmnd=Power%20On")
