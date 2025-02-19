@@ -9,6 +9,7 @@ from alarmmonitormailsender import AlarmMonitorMailSender
 from blaulichtsmscontroller import BlaulichtSmsController
 from chromiumbrowsercontroller import ChromiumBrowserController
 from hdmiceccontroller import (CecLogging, CecMode, LibCecController, PythonCecController)
+from lightcontrol import AlarmLightController
 
 logger = None
 
@@ -87,9 +88,10 @@ def main():
     mail_sender = AlarmMonitorMailSender()
     hdmi_cec_controller = get_cec_controller(config, send_errors, mail_sender)
     browser_controller = ChromiumBrowserController(blaulichtsms_controller.get_session())
+    alarm_light_controller = AlarmLightController()
     alarm_monitor = AlarmMonitor(polling_interval, send_errors, send_starts,
                                  blaulichtsms_controller, hdmi_cec_controller, browser_controller,
-                                 mail_sender)
+                                 mail_sender, [alarm_light_controller])
     alarm_monitor.run()
 
 

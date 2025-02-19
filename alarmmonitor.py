@@ -9,13 +9,14 @@ class AlarmMonitor:
     """Controls the application's execution flow."""
 
     def __init__(self, polling_interval, send_errors, send_starts, blaulichtsms_controller,
-                 hdmi_cec_controller, browser_controller, mail_sender):
+                 hdmi_cec_controller, browser_controller, mail_sender, alarm_listeners):
         self.logger = logging.getLogger(__name__)
         self.scheduler = scheduler(time.time, time.sleep)
         self.blaulichtsms_controller = blaulichtsms_controller
         self.hdmi_cec_controller = hdmi_cec_controller
         self.browser_controller = browser_controller
         self.mail_sender = mail_sender
+        self.alarm_listeners = alarm_listeners
         self.browser_controller.start()
 
         self._polling_interval = polling_interval
@@ -23,6 +24,10 @@ class AlarmMonitor:
         self._send_starts = send_starts
 
         self._is_browser_error = False
+
+    def notify_alarm_listeners(self):
+        for listener in self.alarm_listeners:
+            listener.set_alarm()
 
     def _run_helper(self):
         """The main loop of the application.
@@ -37,6 +42,7 @@ class AlarmMonitor:
         self._check_browser_status()
         if self.blaulichtsms_controller.is_alarm():
             self.hdmi_cec_controller.activate_source()
+            self.notify_alarm_listeners()
         else:
             self.hdmi_cec_controller.standby()
 
