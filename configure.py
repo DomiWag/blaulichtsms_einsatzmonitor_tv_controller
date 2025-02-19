@@ -354,7 +354,7 @@ class AlarmMonitorConfigurator:
     def _write_alarm_lights_section(self, config):
         config["alarm_lights"]["count"] = str(len(self.alarm_lights))
         for i in range(len(self.alarm_lights)):
-            light_section = "alarm_light_" + str(i)
+            light_section = f"alarm_light_{i}"
             light_config = self.alarm_lights[i]
             config[light_section] = {}
             config[light_section]["address"] = light_config["address"]
