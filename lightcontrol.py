@@ -1,6 +1,7 @@
 import requests
 import abc
 import configparser
+import logging
 
 
 class BaseAlarmLight(abc.ABC):
@@ -18,20 +19,28 @@ class BaseAlarmLight(abc.ABC):
 
 class TasmotaAlarmLight(BaseAlarmLight):
     def __init__(self, ip: str, alarm_duration_seconds: int):
+        self.logger = logging.getLogger(__name__)
         self.ip = ip
         self.alarm_duration = alarm_duration_seconds * 1000 # Convert to milliseconds
 
     def turn_on(self):
+        self.logger.info(f"Turning on light at {self.ip}")
         requests.get(f"http://{self.ip}/cm?cmnd=Power%20On")
 
     def turn_off(self):
+        self.logger.info(f"Turning off light at {self.ip}")
         requests.get(f"http://{self.ip}/cm?cmnd=Power%20Off")
 
     def set_alarm(self):
-        requests.get(f"http://{self.ip}/cm?cmnd=TimedPower%20{str(self.alarm_duration)}")
+        try:
+            self.logger.info(f"Setting alarm on light at {self.ip}")
+            requests.get(f"http://{self.ip}/cm?cmnd=TimedPower%20{str(self.alarm_duration)}")
+        except requests.exceptions.RequestException as e:
+            self.logger.error(f"Failed to set alarm on light at {self.ip}: {e}")
 
 class AlarmLightController:
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
         self.lights = []
 
         # Read lights from config
@@ -47,5 +56,6 @@ class AlarmLightController:
             self.lights.append(TasmotaAlarmLight(address, on_time))
 
     def set_alarm(self):
+        self.logger.info("Setting alarm on all lights")
         for light in self.lights:
             light.set_alarm()
