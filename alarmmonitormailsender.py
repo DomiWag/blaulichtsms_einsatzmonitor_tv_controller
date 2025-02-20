@@ -25,5 +25,4 @@ class AlarmMonitorMailSender:
         )
 
     def send_message(self, msg):
-        final_msg = "Subject: " + self.subject + "\n\n" + msg
-        self.mail_sender.send_message(self.from_addr, self.to_addrs, final_msg)
+        self.mail_sender.send_message(self.from_addr, self.to_addrs, self.subject, msg)

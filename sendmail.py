@@ -28,26 +28,30 @@ class MailSender:
         msg_body = MIMEText(body)
         msg.attach(msg_body)
 
-        with open(archive, "rb") as fp:
-            archive_data = fp.read()
-        attachment = MIMEBase("application", "gzip")
-        attachment.set_payload(archive_data)
-        encode_base64(attachment)
-        attachment.add_header(
-            "Content-Disposition",
-            "attachment",
-            filename=os.path.basename(archive)
-        )
-        msg.attach(attachment)
+        if archive:
+            with open(archive, "rb") as fp:
+                archive_data = fp.read()
+            attachment = MIMEBase("application", "gzip")
+            attachment.set_payload(archive_data)
+            encode_base64(attachment)
+            attachment.add_header(
+                "Content-Disposition",
+                "attachment",
+                filename=os.path.basename(archive)
+            )
+            msg.attach(attachment)
 
-        self.send_message(from_addr, to_addrs, msg)
+        self._send_message(from_addr, to_addrs, msg)
 
-    def send_message(self, from_addr, to_addrs, msg):
+    def send_message(self, from_addr, to_addrs, subject, body):
+        self.send_tar_gz_attachment(from_addr, to_addrs, subject, body, None)
+
+    def _send_message(self, from_addr, to_addrs, msg: MIMEMultipart):
         self.logger.info("Sending mail...")
         self.logger.debug("Mail: \n" + str(msg))
         connection = self.get_connection()
         if connection:
-            connection.sendmail(from_addr, to_addrs, str(msg))
+            connection.sendmail(from_addr, to_addrs, msg.as_string())
             connection.quit()
             self.logger.info("Sent mail successfully")
 
