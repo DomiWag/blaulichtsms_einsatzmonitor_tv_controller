@@ -50,12 +50,33 @@ class MailSender:
             connection.quit()
             self.logger.info("Sent mail successfully")
 
-    def get_connection(self):
+    def get_smtp_ssl_connection(self):
         try:
             server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port)
             server.login(self.user, self.password)
             self.logger.debug('Logged in to server')
             return server
         except smtplib.SMTPException:
-            self.logger.error('Unable to login to server')
             return None
+        
+    def get_starttls_connection(self):
+        try:
+            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+            server.starttls()
+            server.login(self.user, self.password)
+            self.logger.debug('Logged in to server using STARTTLS')
+            return server
+        except smtplib.SMTPException as e:
+            return None
+
+    def get_connection(self):
+        conn = self.get_smtp_ssl_connection()
+        self.logger.warning('Unable to login to server via SSL, falling back to STARTTLS') if not conn else None
+        if conn:
+            return conn
+        conn = self.get_starttls_connection()
+        self.logger.warning(f'Unable to login to server using STARTTLS: {e}') if not conn else None
+        if conn:
+            return conn
+        self.logger.error('Unable to login to server')
+        
