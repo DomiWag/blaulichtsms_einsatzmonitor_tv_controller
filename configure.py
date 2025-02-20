@@ -35,8 +35,8 @@ class AlarmMonitorConfigurator:
         self.cec_mode = CecMode.LIB_CEC
         self.cec_logging = CecLogging.CEC_LOG_ERROR
 
-        self.smtp_server = "smtp.gmail.com"
-        self.smtp_port = "465"
+        self.smtp_server = "mail.gmx.net"
+        self.smtp_port = "587"
         self.subject = "Einsatzmonitor"
 
         self.alarm_lights = []
