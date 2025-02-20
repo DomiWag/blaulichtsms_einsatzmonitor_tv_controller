@@ -4,6 +4,7 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.encoders import encode_base64
+import ssl
 import os
 
 
@@ -51,32 +52,27 @@ class MailSender:
             self.logger.info("Sent mail successfully")
 
     def get_smtp_ssl_connection(self):
-        try:
-            server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port)
-            server.login(self.user, self.password)
-            self.logger.debug('Logged in to server')
-            return server
-        except smtplib.SMTPException:
-            return None
+        server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port)
+        server.login(self.user, self.password)
+        self.logger.debug('Logged in to server')
+        return server
         
     def get_starttls_connection(self):
-        try:
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            server.starttls()
-            server.login(self.user, self.password)
-            self.logger.debug('Logged in to server using STARTTLS')
-            return server
-        except smtplib.SMTPException as e:
-            return None
+        server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+        server.starttls()
+        server.login(self.user, self.password)
+        self.logger.debug('Logged in to server using STARTTLS')
+        return server
 
     def get_connection(self):
-        conn = self.get_smtp_ssl_connection()
-        self.logger.warning('Unable to login to server via SSL, falling back to STARTTLS') if not conn else None
-        if conn:
-            return conn
-        conn = self.get_starttls_connection()
-        self.logger.warning(f'Unable to login to server using STARTTLS: {e}') if not conn else None
-        if conn:
-            return conn
+        try:
+            return self.get_smtp_ssl_connection()
+        except (smtplib.SMTPException, ssl.SSLError) as e:
+            self.logger.warning(f'Unable to login to server via SSL: {e}')
+        self.logger.warning('Falling back to STARTTLS...')
+        try:
+            return self.get_starttls_connection()
+        except (smtplib.SMTPException, ssl.SSLError) as e:
+            self.logger.warning(f'Unable to login to server using STARTTLS: {e}') if not conn else None
         self.logger.error('Unable to login to server')
-        
+        return None
