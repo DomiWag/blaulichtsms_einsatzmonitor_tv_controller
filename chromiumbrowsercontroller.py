@@ -38,7 +38,7 @@ class ChromiumBrowserController:
         return self._process.poll() is None
 
     def _delete_crash_exit(self):
-        """If Chromium starts after an unexpected exit (e.g. the host chrashed),
+        """If Chromium starts after an unexpected exit (e.g. the host crashed),
         Chromium displays a notification asking if the user wants to restore the crashed session.
 
         This method removes this notification, as it is not wanted for the alarm monitor.

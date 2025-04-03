@@ -20,20 +20,20 @@ Die Applikation ist entwickelt für Raspberry Pi in Kombination mit [Raspbian St
 
 Folgende Bibliotheken werden benötigt:
 
-* APT Packete:
+* APT Pakete:
 	* cec-utils
 	* python3-cec
-* Pip Packete:
+* pip Pakete:
 	* pyyaml
 	* cec
 
-Zum Installieren der Äbhängigkeiten folgenden Befehle ausführen:
+Zum Installieren der Abhängigkeiten folgenden Befehle ausführen:
 
 ```bash
 sudo apt install cec-utils python3-cec python3-yaml
 ```
 
-Um Python Packete systemweit mit `pip3 install --system` installieren zu können muss der User der die Installation ausführt in der Gruppe _staff_ sein. Ein User kann zu dieser Gruppe mit:
+Um Python-Pakete systemweit mit `pip3 install --system` installieren zu können muss der User, der die Installation ausführt in der Gruppe _staff_ sein. Ein User kann zu dieser Gruppe mit:
 
 ```bash
 sudo adduser <username> staff
@@ -51,7 +51,7 @@ Mit diesem Befehl wird `setup.sh` von github geladen und automatisch ausgeführt
 curl https://raw.githubusercontent.com/stg93/blaulichtsms_einsatzmonitor_tv_controller/master/setup.sh | bash -
 ```
 
-Ist bereits eine `config.ini` vorhanden, kann diese vor dem Ausführen im aktuellen Ordner abgelet werden.
+Ist bereits eine `config.ini` vorhanden, kann diese vor dem Ausführen im aktuellen Ordner abgelegt werden.
 Das setup script kopiert diese automatisch in das Ausführungsverzeichnis und startet nicht den Konfigurationswizard.
 
 ### Volle Installation
@@ -73,7 +73,7 @@ die Anwendung konfiguriert werden. Bei der Konfiguration werden folgende Informa
   - Die Empfänger des Logs
 - Optionale Alarmlichter. Aktuelle Funktionen:
   - Es werden nur Lichter auf Basis von Tasmota unterstützt
-  - Authentifizierung ist nicht implmentiert
+  - Authentifizierung ist nicht implementiert
   - Für jedes Licht kann eine eigene Einschaltzeit in Sekunden vorgegeben werden. Intern wird der TimedPower Befehl von Tasmota genutzt.
 
 Nachdem die Konfiguration abgeschlossen ist können im File `config.ini` fortgeschrittenere Einstellungen vorgenommen werden. Das Versenden des Logs kann mit dem Attribut `send_log` im File `logging_config.yaml` eingestellt werden.
@@ -86,7 +86,7 @@ sudo ./INSTALL
 
 Der Source Code im aktuellen Verzeichnis wird für die Ausführung verwendet. Es ist daher sinnvoll den Code in sein finales Verzeichnis zu verschieben bevor die Installation erfolgt.
 
-## Deinstalltion
+## Deinstallation
 
 Die Deinstallation erfolgt mit
 
@@ -100,7 +100,7 @@ Danach kann das Verzeichnis mit der Applikation gelöscht werden.
 
 Bei der Installation wird ein Systemd Service eingerichtet über welchen die Anwendung kontrolliert werden kann.
 
-Der Service wird beim Systemstart standardmäßig mitgestartet. Um den Autostart einzustellen kann
+Der Service wird beim Systemstart standardmäßig gestartet. Um den Autostart einzustellen kann
 
 ```bash
 sudo systemctl enable/disable alarmmonitor
@@ -142,7 +142,7 @@ Konkret sollte sich der Test folgendermaßen verhalten:
 - Starten des _alarmmonitor_ Services. Während des Starts wird das HDMI Gerät ausgeschaltet.
 - 6 Abfragen der Mock API alle 10 Sekunden, die in keinen aktiven Alarmen resultieren.
 - Nach der 6. Abfrage liefert die Mock API einen aktiven Alarm.
-  Das HDMI Gerät wird eingeschaltet und der Einsatzmonitor eingezeigt. Außerdem werden alle Alarmlichter aktiviert.
+  Das HDMI Gerät wird eingeschaltet und der Einsatzmonitor angezeigt. Außerdem werden alle Alarmlichter aktiviert.
 - Nach einer Minute sind keine Alarme aktiv und das HDMI Gerät wird ausgeschaltet.
 - Weitere Abfragen die keine aktiven Alarme zurückgeben.
 - Anzeigen einer Zusammenfassung des Tests mit der Anzahl der Fehler und Warnungen und dem Pfad des abgespeicherten Logs.
@@ -163,7 +163,7 @@ Alternativ kann direkt `run_tests.sh` genutzt werden.
 ## HDMI Geräte Steuerung
 
 Die Steuerung eines HDMI Gerätes erfolgt mittels HDMI CEC. Für diese Steuerung sind zwei Modi implementiert.
-Eine Implemetierung verwendet [Pulse-Eight libCEC](https://github.com/Pulse-Eight/libcec) direkt,
+Eine Implementierung verwendet [Pulse-Eight libCEC](https://github.com/Pulse-Eight/libcec) direkt,
 die andere verwendet die Python bindings der libCEC von [trainmain419](https://github.com/trainman419/python-cec).
 Wird _python-cec_ via _pip_ installiert handelt es sich um Version 0.2.6.
 Bei dieser Version schlägt manchmal die Initialisierung fehl.
@@ -180,7 +180,7 @@ cec_mode = 2
 ```
 
 Installiert man _python-cec_ direkt vom source code, ist Version 0.2.7 aktuell.
-Ob das Initalisierungproblem darin behoben ist wurde nicht getestet.
+Ob das Initialisierungsproblem darin behoben ist, wurde nicht getestet.
 
 ### libCEC Shell Befehle
 
@@ -260,7 +260,7 @@ Available commands:
 ## Danksagungen
 
 [r00tat](https://github.com/r00tat) danke für die libCEC Implementierung, die Alarmüberprüfung
-bei mehreren Alarmen und die Inkludierung der blaulichtSMS Infos.
+bei mehreren Alarmen und die Berücksichtigung der blaulichtSMS Infos.
 
 ## Lizenz
 
@@ -272,12 +272,12 @@ Zusätzlich zur Anwendung selbst sind hier noch weitere sinnvolle Maßnahmen gel
 
 ### Wartung im lokalen Netzwerk:
 
-- ssh Zugang
+- SSH-Zugang
 - VNC Server
 
 ### Wartung über das Internet:
 
-- ssh Zugang über [remot3.it](https://www.remot3.it/web/index.html) oder mittels Port Forwarding
+- SSH-Zugang über [remot3.it](https://www.remot3.it/web/index.html) oder mittels Port Forwarding
 
 ### "Fehlerfreie" Anzeige:
 

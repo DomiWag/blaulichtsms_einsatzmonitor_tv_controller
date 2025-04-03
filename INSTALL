@@ -63,7 +63,7 @@ then
 	for elem in "${missingPipDependencies[@]}"
 	do
 		# printf " $elem"
-		printf "Insalling $elem\n"
+		printf "Installing $elem\n"
 		pip3 install --system $elem
 	done
 	# printf "'\n"
@@ -92,7 +92,7 @@ echo ""
 
 
 if [ $? -ne 0 ]; then
-    echo "Errors occured during installation" > /dev/stderr
+    echo "Errors occurred during installation" > /dev/stderr
     exit 1
 fi
 echo "Installation successful"

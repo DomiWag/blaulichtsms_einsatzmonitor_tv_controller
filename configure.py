@@ -213,7 +213,7 @@ class AlarmMonitorConfigurator:
     #def _configure_light_credentials(self):
     #    need_credential = self._is_yes_input("Does your light require login credentials?")
     #    if need_credential:
-    #        self.ligts[:1]['username'] = self._get_input_with_validation(
+    #        self.lights[:1]['username'] = self._get_input_with_validation(
     #            "Please enter the light's username:", "Please type a valid user name:",
     #            self._is_valid_username)
 

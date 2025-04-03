@@ -72,8 +72,8 @@ class BlaulichtSmsController:
     def is_alarm(self):
         """Checks if there is any active alarm.
 
-        An alarm is active if it's datetime is greater than or equals the current datetime minus :alarm_duration:.
-        The datetimes are all in UTC.
+        An alarm is active if its datetime is greater than or equals the current datetime minus :alarm_duration:.
+        All dates and times are in UTC.
 
         :return: True if there is any active alarm, False otherwise
         """

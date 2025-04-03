@@ -108,7 +108,7 @@ class PythonCecController(AbstractCecController):
             self._handle_hdmi_error()
 
 
-class StdoutReader():
+class StdoutReader:
 
     def __init__(self, stdout):
         self.logger = logging.getLogger('CEC')

@@ -57,7 +57,7 @@ def get_alarms(session_token):
 def login():
     """Redirects the login to the real blaulichtSMS Dashboard API to get a real session token.
 
-    Otherwise, the application would not be able to login to the blaulichtSMS Einsatzmonitor web application.
+    Otherwise, the application would not be able to log in to the blaulichtSMS Einsatzmonitor web application.
 
     :return: An blaulichtSMS Dashboard API session element in JSON
     """

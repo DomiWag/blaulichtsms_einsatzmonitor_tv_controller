@@ -7,15 +7,15 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 
-# Starting deinstallation
-echo "Starting deinstallation..."
+# Starting uninstallation
+echo "Starting uninstallation..."
 systemctl stop alarmmonitor \
 && systemctl disable alarmmonitor
 echo ""
 
 
 if [ $? -ne 0 ]; then
-    echo "Errors occured during deinstallation" > /dev/stderr
+    echo "Errors occurred during uninstallation" > /dev/stderr
     exit 1
 fi
-echo "Deinstallation successful"
+echo "Uninstallation successful"
