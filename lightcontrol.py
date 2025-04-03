@@ -33,7 +33,7 @@ class TasmotaAlarmLight(BaseAlarmLight):
 
     def set_alarm(self):
         try:
-            self.logger.info(f"Setting alarm on light at {self.ip}")
+            self.logger.info(f"Setting alarm on light at {self.ip} for {str(self.alarm_duration)} ms")
             requests.get(f"http://{self.ip}/cm?cmnd=TimedPower%20{str(self.alarm_duration)}")
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Failed to set alarm on light at {self.ip}: {e}")
