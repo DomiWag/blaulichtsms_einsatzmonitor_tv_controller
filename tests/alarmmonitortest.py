@@ -22,8 +22,9 @@ class AlarmMonitorTest(AlarmMonitor):
 
         self._check_browser_status()
 
-        if self.blaulichtsms_controller.is_alarm():
+        alarm = self.blaulichtsms_controller.find_active_alarm()
+        if alarm:
             self.hdmi_cec_controller.power_on()
-            self.notify_alarm_listeners()
+            self.notify_alarm_listeners(alarm)
         else:
             self.hdmi_cec_controller.standby()

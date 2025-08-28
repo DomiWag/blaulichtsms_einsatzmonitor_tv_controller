@@ -25,9 +25,9 @@ class AlarmMonitor:
 
         self._is_browser_error = False
 
-    def notify_alarm_listeners(self):
+    def notify_alarm_listeners(self, alarm):
         for listener in self.alarm_listeners:
-            listener.set_alarm()
+            listener.set_alarm(alarm)
 
     def _run_helper(self):
         """The main loop of the application.
@@ -40,9 +40,10 @@ class AlarmMonitor:
         self.scheduler.enter(self._polling_interval, 1, self._run_helper)
 
         self._check_browser_status()
-        if self.blaulichtsms_controller.is_alarm():
+        alarm = self.blaulichtsms_controller.find_active_alarm()
+        if alarm:
             self.hdmi_cec_controller.activate_source()
-            self.notify_alarm_listeners()
+            self.notify_alarm_listeners(alarm)
         else:
             self.hdmi_cec_controller.standby()
 

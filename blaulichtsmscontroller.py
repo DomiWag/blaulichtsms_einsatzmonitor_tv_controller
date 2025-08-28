@@ -69,24 +69,24 @@ class BlaulichtSmsController:
             self.logger.error("Failed to request blaulichtSMS alarms. Maybe there is no internet connection.")
             return None
 
-    def is_alarm(self):
+    def find_active_alarm(self):
         """Checks if there is any active alarm.
 
         An alarm is active if its datetime is greater than or equals the current datetime minus :alarm_duration:.
         All dates and times are in UTC.
 
-        :return: True if there is any active alarm, False otherwise
+        :return: The active alarm or None if there is no active alarm
         """
         self.logger.info("Checking for new alarms...")
         alarms = self._get_alarms()
         if not alarms:
-            return False
+            return None
         for alarm in alarms:
             alarm_datetime = datetime.strptime(alarm["alarmDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
             self.logger.debug("Alarm " + str(alarm["alarmId"]) + " on " + str(alarm_datetime))
             if alarm_datetime >= datetime.utcnow() - self.alarm_duration:
                 self.logger.debug("Alarm " + str(alarm["alarmId"]) + " is active")
                 self.logger.info("There is an active alarm")
-                return True
+                return alarm
         self.logger.info("No active alarm found")
-        return False
+        return None

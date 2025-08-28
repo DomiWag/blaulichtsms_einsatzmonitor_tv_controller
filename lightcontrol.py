@@ -42,6 +42,7 @@ class AlarmLightController:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.lights = []
+        self.processed_alarms = []
 
         # Read lights from config
         config = configparser.ConfigParser()
@@ -55,7 +56,11 @@ class AlarmLightController:
             on_time = int(config[light_section]["on_time"])
             self.lights.append(TasmotaAlarmLight(address, on_time))
 
-    def set_alarm(self):
+    def set_alarm(self, alarm):
+        if alarm in self.processed_alarms:
+            self.logger.info("Alarm already processed, skipping")
+            return
         self.logger.info("Setting alarm on all lights")
         for light in self.lights:
             light.set_alarm()
+        self.processed_alarms.append(alarm)
