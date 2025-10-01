@@ -57,10 +57,11 @@ class AlarmLightController:
             self.lights.append(TasmotaAlarmLight(address, on_time))
 
     def set_alarm(self, alarm):
-        if alarm in self.processed_alarms:
+        alarmId = alarm["alarmId"]
+        if alarmId in self.processed_alarms:
             self.logger.info("Alarm already processed, skipping")
             return
         self.logger.info("Setting alarm on all lights")
         for light in self.lights:
             light.set_alarm()
-        self.processed_alarms.append(alarm)
+        self.processed_alarms.append(alarmId)
